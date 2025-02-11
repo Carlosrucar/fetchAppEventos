@@ -64,25 +64,17 @@ class EventController extends Controller
             $validated['estado'] = 'programado';
             $event = Event::create($validated);
 
-            if ($request->ajax()) {
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Evento creado exitosamente',
-                    'event' => $event,
-                    'redirect' => route('events.show', $event)
-                ]);
-            }
-
-            return redirect()->route('events.show', $event)
-                ->with('success', 'Evento creado exitosamente');
+            return response()->json([
+                'success' => true,
+                'message' => 'Evento creado exitosamente',
+                'event' => $event,
+                'redirect' => route('events.show', $event)
+            ]);
         } catch (\Exception $e) {
-            if ($request->ajax()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Error al crear el evento: ' . $e->getMessage()
-                ], 422);
-            }
-            throw $e;
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al crear el evento: ' . $e->getMessage()
+            ], 422);
         }
     }
 
@@ -108,59 +100,44 @@ class EventController extends Controller
                 }
                 $validated['imagen'] = $request->file('imagen')->store('eventos', 'public');
             }
-
+    
             $event->update($validated);
-
-            if ($request->ajax()) {
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Evento actualizado exitosamente',
-                    'event' => $event,
-                    'redirect' => route('events.show', $event)
-                ]);
-            }
-
-            return redirect()->route('events.show', $event)
-                ->with('success', 'Evento actualizado exitosamente');
+    
+            return response()->json([
+                'success' => true,
+                'message' => 'Evento actualizado exitosamente',
+                'event' => $event,
+                'redirect' => route('events.show', $event)
+            ]);
         } catch (\Exception $e) {
-            if ($request->ajax()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Error al actualizar el evento: ' . $e->getMessage()
-                ], 422);
-            }
-            throw $e;
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al actualizar el evento: ' . $e->getMessage()
+            ], 422);
         }
     }
 
     public function destroy(Event $event)
-    {
-        try {
-            if ($event->imagen) {
-                Storage::disk('public')->delete($event->imagen);
-            }
-
-            $event->delete();
-
-            if (request()->ajax()) {
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Evento eliminado exitosamente'
-                ]);
-            }
-
-            return redirect()->route('events.index')
-                ->with('success', 'Evento eliminado exitosamente');
-        } catch (\Exception $e) {
-            if (request()->ajax()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Error al eliminar el evento: ' . $e->getMessage()
-                ], 422);
-            }
-            throw $e;
+{
+    try {
+        if ($event->imagen) {
+            Storage::disk('public')->delete($event->imagen);
         }
+
+        $event->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Evento eliminado exitosamente',
+            'redirect' => route('events.index')
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Error al eliminar el evento: ' . $e->getMessage()
+        ], 422);
     }
+    }   
 
     public function create()
     {

@@ -173,6 +173,7 @@
 @endpush
 
 @push('scripts')
+<script src="{{ asset('js/events.js') }}"></script>
 <script>
     // Validación del formulario
     (function () {
