@@ -1,0 +1,9 @@
+/* Estilos personalizados */
+.navbar-brand {
+    font-weight: bold;
+    color: #3490dc !important;
+}
+
+.nav-link.active {
+    font-weight: bold;
+}
